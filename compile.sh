@@ -1,7 +1,9 @@
 #!/bin/bash
 
+./autogen.sh
+
 ./configure \
---with-rebar=rebar3 \
+--with-rebar=mix \
 --enable-debug \
 --enable-elixir \
 --enable-pam \
@@ -9,4 +11,6 @@
 --enable-redis \
 --enable-tools
 
-make
+export PATH=/opt/elixir/bin:$PATH
+
+mix local.hex local.rebar do deps.get, compile --force

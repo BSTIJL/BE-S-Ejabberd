@@ -32,6 +32,6 @@ RUN yum update -y \
 && cd elixir \
 && make clean compile \
 && cp -dfr /tmp/kerl/elixir /opt/ \
-&& export PATH=/opt/elixir/bin:${PATH}
+&& echo "export PATH=/opt/elixir/bin:${PATH}" > /etc/profile
 
 CMD ["/usr/bin/bash"]

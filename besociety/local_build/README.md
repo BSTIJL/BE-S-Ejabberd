@@ -20,13 +20,18 @@ build_vm /bin/bash
 In side the docker, execute:
 
 ```
+./autogen.sh
+
 ./configure \
---with-rebar=rebar3 \
+--with-rebar=/opt/elixir/bin/mix \
 --enable-debug \
 --enable-pam \
 --enable-elixir \
 --enable-pgsql \
 --enable-redis \
 --enable-tools
-make
+
+export PATH=/opt/elixir/bin:$PATH
+
+mix do deps.get, compile
 ```
