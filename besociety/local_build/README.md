@@ -23,6 +23,7 @@ In side the docker, execute:
 ./configure \
 --with-rebar=rebar3 \
 --enable-debug \
+--enable-pam \
 --enable-elixir \
 --enable-pgsql \
 --enable-redis \
