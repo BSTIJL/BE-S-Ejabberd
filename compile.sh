@@ -11,6 +11,11 @@
 --enable-redis \
 --enable-tools
 
-export PATH=/opt/elixir/bin:$PATH
 
-mix local.hex local.rebar do deps.get, compile --force
+export PATH=/opt/erlang/23.3.4.16/bin:/opt/elixir/bin:$PATH
+
+mix local.hex --force
+
+mix local.rebar --force
+
+mix do deps.get, compile --force
