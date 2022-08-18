@@ -19,6 +19,7 @@
 	plain_password_required/1]).
 
 -include_lib("xmpp/include/scram.hrl").
+-include("logger.hrl").
 
 start(_Host) ->
 	ok.
@@ -37,6 +38,21 @@ check_password(User, _AuthzId, _Host, Password) ->
 
 user_exists(User, _Host) ->
 	Key = <<?TOKEN_PREFIX/binary, User/binary>>,
+
+%% TODO
+%%	Req = "",
+%%	HttpOpts = [],
+%%	Result = try httpc:request(post, Req, HttpOpts, [{body_format, binary}]) of
+%%						 {ok, {{_, Code, _}, RetHdrs, <<"true">>}} ->
+%%							 true;
+%%						 {error, Reason} ->
+%%							 ?WARNING_MSG("http request error - ~p~n", [Reason]),
+%%							 false
+%%					 catch
+%%						 exit:Reason ->
+%%							 ?WARNING_MSG("http request error - ~p~n", [Reason]),
+%%							 false
+%%					 end,
 	case ejabberd_redis:get(Key) of
 		{ok, _} ->
 			true;
