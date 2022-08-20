@@ -6,7 +6,9 @@ ENV KERL_REPO=https://github.com/kerl/kerl.git \
     ELIXIR_REPO=https://github.com/elixir-lang/elixir.git \
     ELIXIR_TAG=v1.13.4
 
-WORKDIR /tmp
+ADD . /tmp/ejabberd/
+
+WORKDIR /tmp/
 
 RUN yum update -y \
 && yum install -y epel-release \
@@ -32,6 +34,12 @@ RUN yum update -y \
 && cd elixir \
 && make clean compile \
 && cp -dfr /tmp/kerl/elixir /opt/ \
-&& echo "export PATH=/opt/elixir/bin:${PATH}" > /etc/profile
+&& echo "export PATH=/opt/elixir/bin:${PATH}" > /etc/profile \
+&& export PATH=/opt/elixir/bin:${PATH} \
+&& cd /tmp/ejabberd \
+&& ./autogen.sh \
+&& export PATH=/opt/elixir/bin:${PATH} \
+&& ./configure -enable-new-sql-schema --enable-debug --enable-pam --enable-pgsql --enable-redis --enable-tools \
+&& make install
 
 CMD ["/usr/bin/bash"]
