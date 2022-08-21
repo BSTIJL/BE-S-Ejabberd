@@ -8,30 +8,18 @@ docker build \
 -f besociety/local_build/Dockerfile .
 ```
 
+Start the Docker.
 ```
-docker run -it --rm \
+docker run -d \
+--network host \
 --name ejabberd  \
 --platform linux/amd64 \
+-p 5222:5222 \
+-p 5223:5223 \
+-p 5280:5280 \
+-p 5443:5443 \
 -v $PWD:$PWD \
 -w $PWD \
-build_vm /bin/bash
+build_vm
 ```
 
-In side the docker, execute:
-
-```
-./autogen.sh
-
-./configure \
---with-rebar=/opt/elixir/bin/mix \
---enable-debug \
---enable-pam \
---enable-elixir \
---enable-pgsql \
---enable-redis \
---enable-tools
-
-export PATH=/opt/elixir/bin:$PATH
-
-mix do deps.get, compile
-```
