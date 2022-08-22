@@ -11,7 +11,7 @@ docker build \
 Start the Docker.
 ```
 docker run -it --rm \
---network host \
+--network be-society-network \
 --name ejabberd  \
 --platform linux/amd64 \
 -p 5222:5222 \
@@ -22,5 +22,3 @@ docker run -it --rm \
 -v $PWD/_build/prod/rel/ejabberd/lib:/usr/lib/ejabberd/lib \
 besociety_ejabberd
 ```
-
-
