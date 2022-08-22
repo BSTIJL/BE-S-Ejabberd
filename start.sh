@@ -8,8 +8,6 @@ docker run -it --rm \
 -w $PWD \
 besociety_ejabberd /bin/bash -c './compile.sh'
 
-yes | cp -r _build/prod/rel/ejabberd/lib app/
-
 docker run -it --rm \
 --network be-society-network \
 --name ejabberd  \
