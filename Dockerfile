@@ -6,7 +6,7 @@ ENV KERL_REPO=https://github.com/kerl/kerl.git \
     ELIXIR_REPO=https://github.com/elixir-lang/elixir.git \
     ELIXIR_TAG=v1.13.4
 
-ADD besociety/local_build /tmp/ejabberd/
+ADD . /tmp/ejabberd/
 
 WORKDIR /tmp/
 
