@@ -8,7 +8,7 @@ docker run -it --rm \
 -w $PWD \
 besociety_ejabberd /bin/bash -c './compile.sh'
 
-docker run -it --rm \
+docker run -it -d \
 --network be-society-network \
 --name ejabberd  \
 --platform linux/amd64 \
