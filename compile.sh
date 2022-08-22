@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export PATH=/opt/erlang/23.3.4.16/bin:/opt/elixir/bin:$PATH
+export PATH=/opt/elixir/bin:/opt/erlang/23.3.4.16/bin:$PATH
 
 ./autogen.sh
 
