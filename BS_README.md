@@ -5,7 +5,7 @@ Enter the folder where the project is and execute the command follows:
 docker build \
 --platform linux/amd64 \
 -t besociety_ejabberd  \
--f besociety/local_build/Dockerfile .
+-f ./Dockerfile .
 ```
 
 Start the Docker.
