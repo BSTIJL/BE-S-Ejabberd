@@ -4,13 +4,13 @@ Enter the folder where the project is and execute the command follows:
 ```
 docker build \
 --platform linux/amd64 \
--t build_vm  \
+-t besociety_ejabberd  \
 -f besociety/local_build/Dockerfile .
 ```
 
 Start the Docker.
 ```
-docker run -d \
+docker run -it --rm \
 --network host \
 --name ejabberd  \
 --platform linux/amd64 \
@@ -18,8 +18,9 @@ docker run -d \
 -p 5223:5223 \
 -p 5280:5280 \
 -p 5443:5443 \
--v $PWD:$PWD \
--w $PWD \
-build_vm
+-v $PWD/conf:/usr/lib/ejabberd/conf \
+-v $PWD/_build/prod/rel/ejabberd/lib:/usr/lib/ejabberd/lib \
+besociety_ejabberd
 ```
+
 
