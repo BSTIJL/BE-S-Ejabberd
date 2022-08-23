@@ -66,6 +66,7 @@ get_password(User, _Server) ->
 		{ok, Tokens} ->
 			NewToken = list_to_binary(string:replace(Tokens, "\"","",all)),
 			TokenList = binary:split(NewToken, <<",">>, [global]),
+			?DEBUG("TokenList - ~p~n", [TokenList]),
 			case TokenList of
 				[Password, <<>>, <<>>, <<"0">>] ->
 					{cache, {ok, Password}};
