@@ -16,4 +16,4 @@ make clean
 
 make rel
 
-yes | cp -dfr _build/prod/rel/ejabberd/lib app/
+exit
