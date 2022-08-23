@@ -64,7 +64,8 @@ get_password(User, _Server) ->
 	Key = <<?TOKEN_PREFIX/binary, User/binary>>,
 	case ejabberd_redis:get(Key) of
 		{ok, Tokens} ->
-			TokenList = binary:split(Tokens, <<",">>, [global]),
+			NewToken = list_to_binary(string:replace(Tokens, "\"","",all)),
+			TokenList = binary:split(NewToken, <<",">>, [global]),
 			case TokenList of
 				[Password, <<>>, <<>>, <<"0">>] ->
 					{cache, {ok, Password}};
