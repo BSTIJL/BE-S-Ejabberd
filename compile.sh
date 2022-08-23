@@ -12,7 +12,7 @@ export PATH=/opt/elixir/bin:/opt/erlang/23.3.4.16/bin:$PATH
 --enable-redis \
 --enable-tools
 
-make clean
+# make clean
 
 make rel
 
