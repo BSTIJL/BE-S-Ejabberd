@@ -2,7 +2,7 @@
 
 chmod +x ./compile.sh
 
-docker run -it --rm \
+sudo docker run -it --rm \
 --platform linux/amd64 \
 -v $PWD:$PWD \
 -w $PWD \
@@ -10,7 +10,7 @@ besociety_ejabberd /bin/bash -c './compile.sh'
 
 rsync -achrvz --delete  ./_build/prod/rel/ejabberd/lib/ ./app/lib/
 
-docker run -it -d \
+sudo docker run -it -d \
 --network be-society-network \
 --name ejabberd  \
 --platform linux/amd64 \
