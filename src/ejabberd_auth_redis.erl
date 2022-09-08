@@ -63,6 +63,8 @@ user_exists(User, _Host) ->
 get_password(User, _Server) ->
 	Key = <<?TOKEN_PREFIX/binary, User/binary>>,
 	case ejabberd_redis:get(Key) of
+		{ok, undefined} ->
+			false;
 		{ok, Tokens} ->
 			NewToken = list_to_binary(string:replace(Tokens, "\"","",all)),
 			TokenList = binary:split(NewToken, <<",">>, [global]),
