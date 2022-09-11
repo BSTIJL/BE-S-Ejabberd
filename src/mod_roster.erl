@@ -444,6 +444,7 @@ decode_item(Item, R, Managed) ->
 				Sub when Managed -> Sub;
 				_ -> R#roster.subscription
 			    end,
+			 askmessage = Item#roster_item.askmessage,
 	     groups = Item#roster_item.groups}.
 
 -spec process_iq_set(iq()) -> iq().
