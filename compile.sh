@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm -dfr _build
+
 export PATH=/opt/elixir/bin:/opt/erlang/23.3.4.16/bin:$PATH
 
 ./autogen.sh
