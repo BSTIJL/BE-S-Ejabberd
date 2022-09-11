@@ -17,7 +17,7 @@
 hosts:
   - localhost
 
-loglevel: 4
+loglevel: 5
 log_rotate_size: 10485760
 log_rotate_date: ""
 log_rotate_count: 1
@@ -128,24 +128,13 @@ api_permissions:
     who: all
     what: "*"
   "admin access":
-    who:
-      access:
-        allow:
-          - acl: loopback
-          - acl: admin
-      oauth:
-        scope: "ejabberd:admin"
-        access:
-          allow:
-            - acl: loopback
-            - acl: admin
+    who: all
     what:
       - "*"
       - "!stop"
       - "!start"
   "public commands":
-    who:
-      ip: 127.0.0.1/8
+    who: all
     what:
       - status
       - connected_users_number
