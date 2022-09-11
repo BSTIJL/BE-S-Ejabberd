@@ -435,7 +435,7 @@ decode_item(#roster_item{subscription = remove} = Item, R, _) ->
 	     subscription = remove,
 	     ask = none,
 	     groups = [],
-	     askmessage = <<"">>,
+	     askmessage = Item#roster_item.askmesssage,
 	     xs = []};
 decode_item(Item, R, Managed) ->
     R#roster{jid = jid:tolower(Item#roster_item.jid),

@@ -57,7 +57,8 @@
 	 set_vcard/5,
 
 	 % Roster
-	 add_rosteritem/7, delete_rosteritem/4,
+	 add_rosteritem/8,
+	 delete_rosteritem/4,
 	 get_roster/2, push_roster/3,
 	 push_roster_all/1, push_alltoall/2,
 	 push_roster_item/5, build_roster_item/3,
@@ -490,12 +491,12 @@ get_commands_spec() ->
 			args = [{localuser, binary}, {localhost, binary},
 				{user, binary}, {host, binary},
 				{nick, binary}, {group, binary},
-				{subs, binary}],
+				{subs, binary}, {askmessage, binary}],
 			args_rename = [{localserver, localhost}, {server, host}],
 			args_example = [<<"user1">>,<<"myserver.com">>,<<"user2">>, <<"myserver.com">>,
-				<<"User 2">>, <<"Friends">>, <<"both">>],
+				<<"User 2">>, <<"Friends">>, <<"both">>, <<>>],
 			args_desc = ["User name", "Server name", "Contact user name", "Contact server name",
-				"Nickname", "Group", "Subscription"],
+				"Nickname", "Group", "Subscription", "AskMessage"],
 			result = {res, rescode}},
      %%{"", "subs= none, from, to or both"},
      %%{"", "example: add-roster peter localhost mike server.com MiKe Employees both"},
@@ -1277,19 +1278,19 @@ update_vcard_els(Data, ContentList, Els1) ->
 %%% Roster
 %%%
 
-add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs) ->
-    case {jid:make(LocalUser, LocalServer), jid:make(User, Server)} of
-	{error, _} ->
-	    throw({error, "Invalid 'localuser'/'localserver'"});
-	{_, error} ->
-	    throw({error, "Invalid 'user'/'server'"});
-	{Jid, _Jid2} ->
-	    RosterItem = build_roster_item(User, Server, {add, Nick, Subs, Group}),
-	    case mod_roster:set_item_and_notify_clients(Jid, RosterItem, true) of
-		ok -> ok;
-		_ -> error
-	    end
-    end.
+add_rosteritem(LocalUser, LocalServer, User, Server, Nick, Group, Subs, AskMessage) ->
+	case {jid:make(LocalUser, LocalServer), jid:make(User, Server)} of
+		{error, _} ->
+			throw({error, "Invalid 'localuser'/'localserver'"});
+		{_, error} ->
+			throw({error, "Invalid 'user'/'server'"});
+		{Jid, _Jid2} ->
+			RosterItem = build_roster_item(User, Server, {add, Nick, Subs, Group, AskMessage}),
+			case mod_roster:set_item_and_notify_clients(Jid, RosterItem, true) of
+				ok -> ok;
+				_ -> error
+			end
+	end.
 
 subscribe(LU, LS, User, Server, Nick, Group, Subscription, _Xattrs) ->
     case {jid:make(LU, LS), jid:make(User, Server)} of
@@ -1410,11 +1411,18 @@ push_roster_item(LU, LS, R, U, S, Action) ->
       xmpp:set_from_to(ResIQ, jid:remove_resource(LJID), LJID)).
 
 build_roster_item(U, S, {add, Nick, Subs, Group}) ->
+	Groups = binary:split(Group,<<";">>, [global]),
+	#roster_item{jid = jid:make(U, S),
+		name = Nick,
+		subscription = misc:binary_to_atom(Subs),
+		groups = Groups};
+build_roster_item(U, S, {add, Nick, Subs, Group, AskMessage}) ->
     Groups = binary:split(Group,<<";">>, [global]),
     #roster_item{jid = jid:make(U, S),
-		 name = Nick,
-		 subscription = misc:binary_to_atom(Subs),
-		 groups = Groups};
+		  name = Nick,
+		  subscription = misc:binary_to_atom(Subs),
+			askmesssage = AskMessage,
+		  groups = Groups};
 build_roster_item(U, S, remove) ->
     #roster_item{jid = jid:make(U, S), subscription = remove}.
 
