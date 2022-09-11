@@ -1421,7 +1421,7 @@ build_roster_item(U, S, {add, Nick, Subs, Group, AskMessage}) ->
     #roster_item{jid = jid:make(U, S),
 		  name = Nick,
 		  subscription = misc:binary_to_atom(Subs),
-			askmesssage = AskMessage,
+			askmessage = AskMessage,
 		  groups = Groups};
 build_roster_item(U, S, remove) ->
     #roster_item{jid = jid:make(U, S), subscription = remove}.
