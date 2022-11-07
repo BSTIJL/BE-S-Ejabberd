@@ -154,6 +154,7 @@ store(Pkt, LServer, {LUser, LHost}, Type, Peer, Nick, _Dir, TS) ->
 		   jid:remove_resource(Peer))),
     LPeer = jid:encode(
 	      jid:tolower(Peer)),
+	  MsgId = fxml:get_tag_attr_s(<<"id">>, Pkt),
     Body = fxml:get_subtag_cdata(Pkt, <<"body">>),
     SType = misc:atom_to_binary(Type),
     SqlType = ejabberd_option:sql_type(LServer),
@@ -177,6 +178,7 @@ store(Pkt, LServer, {LUser, LHost}, Type, Peer, Nick, _Dir, TS) ->
 	               "timestamp=%(TS)d",
 	               "peer=%(LPeer)s",
 	               "bare_peer=%(BarePeer)s",
+								 "msg_id=%(MsgId)s",
 	               "xml=N%(XML)s",
 	               "txt=N%(Body)s",
 	               "kind=%(SType)s",
@@ -195,6 +197,7 @@ store(Pkt, LServer, {LUser, LHost}, Type, Peer, Nick, _Dir, TS) ->
 	               "timestamp=%(TS)d",
 	               "peer=%(LPeer)s",
 	               "bare_peer=%(BarePeer)s",
+								 "msg_id=%(MsgId)s",
 	               "xml=%(XML)s",
 	               "txt=%(Body)s",
 	               "kind=%(SType)s",
