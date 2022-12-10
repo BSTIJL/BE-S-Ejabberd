@@ -41,9 +41,7 @@ check_password(User, _AuthzId, _Host, Password) ->
 
 user_exists(User, Server) ->
 	case get_user(User, Server) of
-		{selected, []} ->
-			false;
-		{select, _} ->
+		{selected, [{User}]} ->
 			true;
 		_ ->
 			false
