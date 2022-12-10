@@ -41,9 +41,9 @@ check_password(User, _AuthzId, _Host, Password) ->
 user_exists(User, Server) ->
 	case get_user(User, Server) of
 		{selected, [{User}]} ->
-			true;
+			{cache, true};
 		_ ->
-			false
+			{nocache, false}
 	end.
 
 get_password(User, _Server) ->
