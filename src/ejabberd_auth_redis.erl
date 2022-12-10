@@ -15,7 +15,6 @@
 	check_password/4,
 	get_user/2,
 	user_exists/2,
-	user_exists/2,
 	store_type/1,
 	get_password/2,
 	plain_password_required/1]).
