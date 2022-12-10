@@ -13,6 +13,8 @@
 
 -export([start/1, stop/1,
 	check_password/4,
+	get_user/2,
+	user_exists/2,
 	user_exists/2,
 	store_type/1,
 	get_password/2,
@@ -20,6 +22,7 @@
 
 -include_lib("xmpp/include/scram.hrl").
 -include("logger.hrl").
+-include("ejabberd_sql_pt.hrl").
 
 start(_Host) ->
 	ok.
@@ -36,25 +39,11 @@ check_password(User, _AuthzId, _Host, Password) ->
 			false
 	end.
 
-user_exists(User, _Host) ->
-	Key = <<?TOKEN_PREFIX/binary, User/binary>>,
-
-%% TODO
-%%	Req = "",
-%%	HttpOpts = [],
-%%	Result = try httpc:request(post, Req, HttpOpts, [{body_format, binary}]) of
-%%						 {ok, {{_, Code, _}, RetHdrs, <<"true">>}} ->
-%%							 true;
-%%						 {error, Reason} ->
-%%							 ?WARNING_MSG("http request error - ~p~n", [Reason]),
-%%							 false
-%%					 catch
-%%						 exit:Reason ->
-%%							 ?WARNING_MSG("http request error - ~p~n", [Reason]),
-%%							 false
-%%					 end,
-	case ejabberd_redis:get(Key) of
-		{ok, _} ->
+user_exists(User, Server) ->
+	case get_user(User, Server) of
+		{selected, []} ->
+			false;
+		{select, _} ->
 			true;
 		_ ->
 			false
@@ -89,6 +78,11 @@ get_password(User, _Server) ->
 		_ ->
 			false
 	end.
+
+get_user(LUser, LServer) ->
+	ejabberd_sql:sql_query(
+		LServer,
+		?SQL("select @(username)s from bs_user where username=%(LUser)s")).
 
 plain_password_required(Server) ->
 	store_type(Server) == scram.
