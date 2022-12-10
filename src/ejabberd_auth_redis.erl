@@ -90,6 +90,8 @@ get_password(User, _Server) ->
 			false
 	end.
 
-plain_password_required(_) -> false.
+plain_password_required(Server) ->
+	store_type(Server) == scram.
 
-store_type(_) -> scram.
+store_type(Server) ->
+	ejabberd_auth:password_format(Server).
