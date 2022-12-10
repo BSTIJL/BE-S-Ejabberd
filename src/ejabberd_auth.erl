@@ -665,7 +665,7 @@ db_user_exists(User, Server, Mod) ->
 %%		_ ->
 %%		    false
 %%	    end
-    end.
+%%    end.
 
 db_check_password(User, AuthzId, Server, ProvidedPassword,
 		  Digest, DigestFun, Mod) ->
