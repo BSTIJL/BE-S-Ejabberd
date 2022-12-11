@@ -16,6 +16,7 @@
 
 hosts:
   - localhost
+  - chat.be-society.com
 
 loglevel: 5
 log_rotate_size: 10485760
@@ -25,6 +26,8 @@ log_rate_limit: 100
 
 certfiles:
   - /home/ejabberd/conf/server.pem
+##  - /usr/lib/ejabberd/conf/chat_be_society_com.crt
+##  - /usr/lib/ejabberd/conf/chat_be_society_com.key
 
 ## If you already have certificates, list them here
 # certfiles:
@@ -157,6 +160,16 @@ shaper_rules:
 
 ## Authentication config
 auth_method: redis
+auth_password_format: plain
+disable_sasl_mechanisms:
+  - SCRAM-SHA-1
+  - SCRAM-SHA-256
+  - SCRAM-SHA-512
+  - SCRAM-SHA-1-PLUS
+  - SCRAM-SHA-256-PLUS
+  - SCRAM-SHA-512-PLUS
+  - DIGEST-MD5
+  - X-OAUTH2
 
 ## Database connection info
 sql_type: pgsql
