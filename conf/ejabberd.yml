@@ -15,24 +15,24 @@
 ###
 
 hosts:
-  - localhost
   - chat.be-society.com
 
 loglevel: 5
 log_rotate_size: 10485760
 log_rotate_date: ""
-log_rotate_count: 1
+log_rotate_count: 10
 log_rate_limit: 100
 
-certfiles:
-  - /home/ejabberd/conf/server.pem
-##  - /usr/lib/ejabberd/conf/chat_be_society_com.crt
-##  - /usr/lib/ejabberd/conf/chat_be_society_com.key
+  #certfiles:
+#  - /home/ejabberd/conf/server.pem
 
 ## If you already have certificates, list them here
-# certfiles:
-#  - /etc/letsencrypt/live/domain.tld/fullchain.pem
-#  - /etc/letsencrypt/live/domain.tld/privkey.pem
+certfiles:
+  - /usr/lib/ejabberd/conf/chat_be_society_com.crt
+  - /usr/lib/ejabberd/conf/chat_be_society_com.key
+
+  #  - /etc/letsencrypt/live/domain.tld/fullchain.pem
+  #- /etc/letsencrypt/live/domain.tld/privkey.pem
 
 listen:
   -
@@ -52,11 +52,11 @@ listen:
     shaper: c2s_shaper
     access: c2s
     starttls_required: true
-#  -
-#    port: 5269
-#    ip: "::"
-#    module: ejabberd_s2s_in
-#    max_stanza_size: 524288
+  #  -
+  #    port: 5269
+  #    ip: "::"
+  #    module: ejabberd_s2s_in
+  #    max_stanza_size: 524288
   -
     port: 5443
     ip: "::"
@@ -81,12 +81,12 @@ listen:
       /upload: mod_http_upload
       /ws: ejabberd_http_ws
       /.well-known/acme-challenge: ejabberd_acme
-#  -
-#    port: 3478
-#    ip: "::"
-#    transport: udp
-#    module: ejabberd_stun
-#    use_turn: true
+    #  -
+    #    port: 3478
+    #    ip: "::"
+    #    transport: udp
+    #    module: ejabberd_stun
+    #    use_turn: true
     ## The server's public IPv4 address:
     # turn_ipv4_address: "203.0.113.3"
     ## The server's public IPv6 address:
@@ -144,18 +144,19 @@ api_permissions:
 
 shaper:
   normal:
-    rate: 3000
-    burst_size: 20000
-  fast: 100000
+    rate: 300000
+    burst_size: 2000000
+  fast: 10000000
 
 shaper_rules:
-  max_user_sessions: 10
+  max_user_sessions: 100
   max_user_offline_messages:
-    1000: admin
-    2000: all
+    200: admin
+    20: all
   c2s_shaper:
     none: admin
-    normal: all
+    #    normal: all
+    none: all
   s2s_shaper: fast
 
 ## Authentication config
@@ -178,7 +179,7 @@ sql_port: 5432
 sql_database: ejabberd
 sql_username: postgres
 sql_password: postgres
-sql_pool_size: 5
+sql_pool_size: 10
 
 ## Redis connection info
 redis_connect_timeout: 2
@@ -193,6 +194,14 @@ new_sql_schema: true
 
 default_db: sql
 
+use_cache: true
+
+auth_use_cache: false
+
+router_use_cache: true
+
+sm_use_cache: true
+
 modules:
   mod_adhoc: {}
   mod_admin_extra: {}
@@ -206,7 +215,7 @@ modules:
   mod_client_state: {}
   mod_configure: {}
   mod_disco: {}
-  mod_fail2ban: {}
+  # mod_fail2ban: {}
   mod_http_api: {}
   mod_http_upload:
     put_url: https://@HOST@:5443/upload
@@ -215,7 +224,7 @@ modules:
     ## Mnesia is limited to 2GB, better to use an SQL backend
     ## For small servers SQLite is a good fit and is very easy
     ## to configure. Uncomment this when you have SQL configured:
-    ## db_type: sql
+    db_type: sql
     assume_mam_usage: true
     default: always
   #mod_mqtt: {}
@@ -240,7 +249,7 @@ modules:
     access_max_user_messages: max_user_offline_messages
     store_empty_body: false
     store_groupchat: true
-    use_mam_for_storage: true
+    use_mam_for_storage: false
 
   mod_ping: {}
   mod_privacy: {}
@@ -259,20 +268,22 @@ modules:
         access_model: whitelist
   mod_push: {}
   mod_push_keepalive: {}
-  #mod_register:
+    #mod_register:
     ## Only accept registration requests from the "trusted"
     ## network (see access_rules section above).
     ## Think twice before enabling registration from any
     ## address. See the Jabber SPAM Manifesto for details:
-    ## https://github.com/ge0rg/jabber-spam-fighting-manifesto
+  ## https://github.com/ge0rg/jabber-spam-fighting-manifesto
   #  ip_access: trusted_network
   mod_roster:
-    versioning: true
-#  mod_s2s_dialback: {}
+    versioning: false
+    use_cache: true
+    db_type: sql
+  ##  mod_s2s_dialback: {}
   mod_shared_roster: {}
   mod_stream_mgmt:
     resend_on_timeout: if_offline
-#  mod_stun_disco: {}
+  ##  mod_stun_disco: {}
   mod_vcard: {}
   mod_vcard_xupdate: {}
   mod_version:
