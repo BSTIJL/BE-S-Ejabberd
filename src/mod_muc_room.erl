@@ -3842,170 +3842,178 @@ set_opts([{vcard, Val} | Opts], StateData)
     ValRaw = fxml:element_to_binary(xmpp:encode(Val)),
     set_opts([{vcard, ValRaw} | Opts], StateData);
 set_opts([{Opt, Val} | Opts], StateData) ->
-    NSD = case Opt of
-	    title ->
-		StateData#state{config =
-				    (StateData#state.config)#config{title =
-									Val}};
-	    description ->
-		StateData#state{config =
-				    (StateData#state.config)#config{description
-									= Val}};
-	    allow_change_subj ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_change_subj
-									= Val}};
-	    allow_query_users ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_query_users
-									= Val}};
-	    allow_private_messages ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_private_messages
-									= Val}};
-	    allow_private_messages_from_visitors ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_private_messages_from_visitors
-									= Val}};
-	    allow_visitor_nickchange ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_visitor_nickchange
-									= Val}};
-	    allow_visitor_status ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_visitor_status
-									= Val}};
-	    public ->
-		StateData#state{config =
-				    (StateData#state.config)#config{public =
-									Val}};
-	    public_list ->
-		StateData#state{config =
-				    (StateData#state.config)#config{public_list
-									= Val}};
-	    persistent ->
-		StateData#state{config =
-				    (StateData#state.config)#config{persistent =
-									Val}};
-	    moderated ->
-		StateData#state{config =
-				    (StateData#state.config)#config{moderated =
-									Val}};
-	    members_by_default ->
-		StateData#state{config =
-				    (StateData#state.config)#config{members_by_default
-									= Val}};
-	    members_only ->
-		StateData#state{config =
-				    (StateData#state.config)#config{members_only
-									= Val}};
-	    allow_user_invites ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_user_invites
-									= Val}};
-	    password_protected ->
-		StateData#state{config =
-				    (StateData#state.config)#config{password_protected
-									= Val}};
-	    captcha_protected ->
-		StateData#state{config =
-				    (StateData#state.config)#config{captcha_protected
-									= Val}};
-	    password ->
-		StateData#state{config =
-				    (StateData#state.config)#config{password =
-									Val}};
-	    anonymous ->
-		StateData#state{config =
-				    (StateData#state.config)#config{anonymous =
-									Val}};
-	    presence_broadcast ->
-		StateData#state{config =
-				    (StateData#state.config)#config{presence_broadcast =
-									Val}};
-	    logging ->
-		StateData#state{config =
-				    (StateData#state.config)#config{logging =
-									Val}};
-	    mam ->
-		StateData#state{config =
-				    (StateData#state.config)#config{mam = Val}};
-	    captcha_whitelist ->
-		StateData#state{config =
-				    (StateData#state.config)#config{captcha_whitelist
-									=
-									(?SETS):from_list(Val)}};
-	    allow_voice_requests ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_voice_requests
-									= Val}};
-	    voice_request_min_interval ->
-		StateData#state{config =
-				    (StateData#state.config)#config{voice_request_min_interval
-									= Val}};
-	    max_users ->
-		ServiceMaxUsers = get_service_max_users(StateData),
-		MaxUsers = if Val =< ServiceMaxUsers -> Val;
-			      true -> ServiceMaxUsers
-			   end,
-		StateData#state{config =
-				    (StateData#state.config)#config{max_users =
-									MaxUsers}};
-	    vcard ->
-		StateData#state{config =
-				    (StateData#state.config)#config{vcard =
-									Val}};
-	    vcard_xupdate ->
-		StateData#state{config =
-				    (StateData#state.config)#config{vcard_xupdate =
-									Val}};
-	    pubsub ->
-		StateData#state{config =
-				    (StateData#state.config)#config{pubsub = Val}};
-	    allow_subscription ->
-		StateData#state{config =
-				    (StateData#state.config)#config{allow_subscription = Val}};
-            enable_hats ->
-                StateData#state{config =
-                                    (StateData#state.config)#config{enable_hats = Val}};
-	    lang ->
-		StateData#state{config =
-				    (StateData#state.config)#config{lang = Val}};
-	    subscribers ->
-                  MUCSubscribers =
-                      lists:foldl(
-                        fun({JID, Nick, Nodes}, MUCSubs) ->
-                                BareJID =
-                                    case JID of
-                                        #jid{} -> jid:remove_resource(JID);
-                                        _ ->
-                                            ?ERROR_MSG("Invalid subscriber JID in set_opts ~p", [JID]),
-                                            jid:remove_resource(jid:make(JID))
-                                    end,
-                                muc_subscribers_put(
-                                  #subscriber{jid = BareJID,
-                                              nick = Nick,
-                                              nodes = Nodes},
-                                  MUCSubs)
-                        end, muc_subscribers_new(), Val),
-                  StateData#state{muc_subscribers = MUCSubscribers};
-	    affiliations ->
-		StateData#state{affiliations = maps:from_list(Val)};
-	    subject ->
-		  Subj = if Val == <<"">> -> [];
-			    is_binary(Val) -> [#text{data = Val}];
-			    is_list(Val) -> Val
-			 end,
-		  StateData#state{subject = Subj};
-	    subject_author -> StateData#state{subject_author = Val};
-            hats_users ->
-                  Hats = maps:from_list(
-                           lists:map(fun({U, H}) -> {U, maps:from_list(H)} end,
-                                     Val)),
-                  StateData#state{hats_users = Hats};
-	    _ -> StateData
-	  end,
-    set_opts(Opts, NSD).
+	NSD = case Opt of
+					photo ->
+						StateData#state{config =
+						(StateData#state.config)#config{photo =
+						Val}};
+					about ->
+						StateData#state{config =
+						(StateData#state.config)#config{about =
+						Val}};
+					title ->
+						StateData#state{config =
+						(StateData#state.config)#config{title =
+						Val}};
+					description ->
+						StateData#state{config =
+						(StateData#state.config)#config{description
+						= Val}};
+					allow_change_subj ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_change_subj
+						= Val}};
+					allow_query_users ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_query_users
+						= Val}};
+					allow_private_messages ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_private_messages
+						= Val}};
+					allow_private_messages_from_visitors ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_private_messages_from_visitors
+						= Val}};
+					allow_visitor_nickchange ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_visitor_nickchange
+						= Val}};
+					allow_visitor_status ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_visitor_status
+						= Val}};
+					public ->
+						StateData#state{config =
+						(StateData#state.config)#config{public =
+						Val}};
+					public_list ->
+						StateData#state{config =
+						(StateData#state.config)#config{public_list
+						= Val}};
+					persistent ->
+						StateData#state{config =
+						(StateData#state.config)#config{persistent =
+						Val}};
+					moderated ->
+						StateData#state{config =
+						(StateData#state.config)#config{moderated =
+						Val}};
+					members_by_default ->
+						StateData#state{config =
+						(StateData#state.config)#config{members_by_default
+						= Val}};
+					members_only ->
+						StateData#state{config =
+						(StateData#state.config)#config{members_only
+						= Val}};
+					allow_user_invites ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_user_invites
+						= Val}};
+					password_protected ->
+						StateData#state{config =
+						(StateData#state.config)#config{password_protected
+						= Val}};
+					captcha_protected ->
+						StateData#state{config =
+						(StateData#state.config)#config{captcha_protected
+						= Val}};
+					password ->
+						StateData#state{config =
+						(StateData#state.config)#config{password =
+						Val}};
+					anonymous ->
+						StateData#state{config =
+						(StateData#state.config)#config{anonymous =
+						Val}};
+					presence_broadcast ->
+						StateData#state{config =
+						(StateData#state.config)#config{presence_broadcast =
+						Val}};
+					logging ->
+						StateData#state{config =
+						(StateData#state.config)#config{logging =
+						Val}};
+					mam ->
+						StateData#state{config =
+						(StateData#state.config)#config{mam = Val}};
+					captcha_whitelist ->
+						StateData#state{config =
+						(StateData#state.config)#config{captcha_whitelist
+						=
+						(?SETS):from_list(Val)}};
+					allow_voice_requests ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_voice_requests
+						= Val}};
+					voice_request_min_interval ->
+						StateData#state{config =
+						(StateData#state.config)#config{voice_request_min_interval
+						= Val}};
+					max_users ->
+						ServiceMaxUsers = get_service_max_users(StateData),
+						MaxUsers = if Val =< ServiceMaxUsers -> Val;
+												 true -> ServiceMaxUsers
+											 end,
+						StateData#state{config =
+						(StateData#state.config)#config{max_users =
+						MaxUsers}};
+					vcard ->
+						StateData#state{config =
+						(StateData#state.config)#config{vcard =
+						Val}};
+					vcard_xupdate ->
+						StateData#state{config =
+						(StateData#state.config)#config{vcard_xupdate =
+						Val}};
+					pubsub ->
+						StateData#state{config =
+						(StateData#state.config)#config{pubsub = Val}};
+					allow_subscription ->
+						StateData#state{config =
+						(StateData#state.config)#config{allow_subscription = Val}};
+					enable_hats ->
+						StateData#state{config =
+						(StateData#state.config)#config{enable_hats = Val}};
+					lang ->
+						StateData#state{config =
+						(StateData#state.config)#config{lang = Val}};
+					subscribers ->
+						MUCSubscribers =
+							lists:foldl(
+								fun({JID, Nick, Nodes}, MUCSubs) ->
+									BareJID =
+										case JID of
+											#jid{} -> jid:remove_resource(JID);
+											_ ->
+												?ERROR_MSG("Invalid subscriber JID in set_opts ~p", [JID]),
+												jid:remove_resource(jid:make(JID))
+										end,
+									muc_subscribers_put(
+										#subscriber{jid = BareJID,
+											nick = Nick,
+											nodes = Nodes},
+										MUCSubs)
+								end, muc_subscribers_new(), Val),
+						StateData#state{muc_subscribers = MUCSubscribers};
+					affiliations ->
+						StateData#state{affiliations = maps:from_list(Val)};
+					subject ->
+						Subj = if Val == <<"">> -> [];
+										 is_binary(Val) -> [#text{data = Val}];
+										 is_list(Val) -> Val
+									 end,
+						StateData#state{subject = Subj};
+					subject_author -> StateData#state{subject_author = Val};
+					hats_users ->
+						Hats = maps:from_list(
+							lists:map(fun({U, H}) -> {U, maps:from_list(H)} end,
+								Val)),
+						StateData#state{hats_users = Hats};
+					_ -> StateData
+				end,
+	set_opts(Opts, NSD).
 
 -spec set_vcard_xupdate(state()) -> state().
 set_vcard_xupdate(#state{config =

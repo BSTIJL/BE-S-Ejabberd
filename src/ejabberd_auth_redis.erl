@@ -7,7 +7,6 @@
 -author('defeng.liang.cn@gmail.com').
 
 -define(TOKEN_PREFIX, <<"token_">>).
--define(USER_PREFIX, <<"user_">>).
 
 -behaviour(ejabberd_auth).
 

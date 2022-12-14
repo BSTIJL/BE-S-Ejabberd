@@ -34,6 +34,8 @@
 
 -record(config,
 {
+    photo                                = <<"">> :: binary(),
+    about                                = <<"">> :: binary(),
     title                                = <<"">> :: binary(),
     description                          = <<"">> :: binary(),
     allow_change_subj                    = true :: boolean(),
