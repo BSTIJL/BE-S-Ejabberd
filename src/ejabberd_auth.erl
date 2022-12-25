@@ -624,43 +624,48 @@ db_get_password(User, Server, Mod) ->
     end.
 
 db_user_exists(User, Server, Mod) ->
-    case db_get_password(User, Server, Mod) of
-	{ok, _} ->
-	    true;
-	not_found ->
-	    false;
-	error ->
-	    case {Mod:store_type(Server), use_cache(Mod, Server)} of
-		{external, true} ->
-		    Val = case ets_cache:lookup(cache_tab(Mod), {User, Server}, error) of
-			      error ->
-				  ets_cache:update(cache_tab(Mod), {User, Server}, {ok, exists},
-						   fun() ->
-							   case Mod:user_exists(User, Server) of
-							       {CacheTag, true} -> {CacheTag, {ok, exists}};
-							       {CacheTag, false} -> {CacheTag, not_found};
-							       {_, {error, _}} = Err -> Err
-							   end
-						   end);
-			      Other ->
-				  Other
-			  end,
-		    case Val of
-			{ok, _} ->
-			    true;
-			not_found ->
-			    false;
-			error ->
-			    false;
-			{error, _} = Err ->
-			    Err
-		    end;
-		{external, false} ->
-		    ets_cache:untag(Mod:user_exists(User, Server));
-		_ ->
-		    false
-	    end
-    end.
+	case Mod:user_exists(User, Server) of
+		{_CacheTag, true} -> true;
+		{_CacheTag, false} -> false;
+		{_, {error, _}} = Err -> false
+	end.
+%%    case db_get_password(User, Server, Mod) of
+%%	{ok, _} ->
+%%	    true;
+%%	not_found ->
+%%	    false;
+%%	error ->
+%%	    case {Mod:store_type(Server), use_cache(Mod, Server)} of
+%%		{external, true} ->
+%%		    Val = case ets_cache:lookup(cache_tab(Mod), {User, Server}, error) of
+%%			      error ->
+%%				  ets_cache:update(cache_tab(Mod), {User, Server}, {ok, exists},
+%%						   fun() ->
+%%							   case Mod:user_exists(User, Server) of
+%%							       {CacheTag, true} -> {CacheTag, {ok, exists}};
+%%							       {CacheTag, false} -> {CacheTag, not_found};
+%%							       {_, {error, _}} = Err -> Err
+%%							   end
+%%						   end);
+%%			      Other ->
+%%				  Other
+%%			  end,
+%%		    case Val of
+%%			{ok, _} ->
+%%			    true;
+%%			not_found ->
+%%			    false;
+%%			error ->
+%%			    false;
+%%			{error, _} = Err ->
+%%			    Err
+%%		    end;
+%%		{external, false} ->
+%%		    ets_cache:untag(Mod:user_exists(User, Server));
+%%		_ ->
+%%		    false
+%%	    end
+%%    end.
 
 db_check_password(User, AuthzId, Server, ProvidedPassword,
 		  Digest, DigestFun, Mod) ->
