@@ -16,6 +16,7 @@
 
 hosts:
   - localhost
+  - chat.be-society.com
 
 loglevel: 5
 log_rotate_size: 10485760
@@ -193,7 +194,7 @@ modules:
   mod_client_state: {}
   mod_configure: {}
   mod_disco: {}
-  mod_fail2ban: {}
+  #mod_fail2ban: {}
   mod_http_api: {}
   mod_http_upload:
     put_url: https://@HOST@:5443/upload
@@ -208,23 +209,42 @@ modules:
   #mod_mqtt: {}
   mod_muc:
     access:
-      - allow
+      - allow: all
     access_admin:
       - allow: admin
-    access_create: muc_create
-    access_persistent: muc_create
+    access_create: all
+    access_persistent: all
+    access_register: all
     access_mam:
-      - allow
+      - allow: all
+    db_type: sql
+    history_size: 100
+    max_user_conferences: 200
+    max_users_admin_threshold: 20
+    min_message_interval: 0.4
     default_room_options:
-      mam: true
+      allow_change_subj: true
+      allow_private_messages: true
+      allow_private_messages_from_visitors: true
+      allow_query_users: true
       allow_subscription: true
-      allow_user_invites: true
+      mam: true
+      allow_user_invites: false
+      members_only: true
+      members_by_default: true
       anonymous: false
-      moderated: false
+      moderated: true
+      persistent: true
+      presence_broadcast:
+        - moderator
+        - participant
+      public: false
+      public_list: true
+      pubsub:
 
   mod_muc_admin: {}
   mod_offline:
-    access_max_user_messages: max_user_offline_messages
+    # access_max_user_messages: max_user_offline_messages
     store_empty_body: false
     store_groupchat: true
     use_mam_for_storage: true
@@ -236,7 +256,8 @@ modules:
     access: local
     max_connections: 5
   mod_pubsub:
-    access_createnode: pubsub_createnode
+    access_createnode: all
+    db_type: sql
     plugins:
       - flat
       - pep
