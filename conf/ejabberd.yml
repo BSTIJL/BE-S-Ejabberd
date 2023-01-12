@@ -306,7 +306,11 @@ modules:
   mod_stream_mgmt:
     resend_on_timeout: if_offline
   ##  mod_stun_disco: {}
-  mod_vcard: {}
+  mod_vcard:
+    db_type: db
+    search: false
+    use_cache: false
+    s3_proxy_server: https://chat.be-society.com/files/
   mod_vcard_xupdate: {}
   mod_version:
     show_os: false

@@ -126,3 +126,34 @@ and [ejabberd translations](https://github.com/processone/ejabberd-po/) under MI
 [weblate]: https://hosted.weblate.org/projects/ejabberd/ejabberd-po/
 [xeps]: https://www.process-one.net/en/ejabberd/protocols/
 [xmpp]: https://xmpp.org/
+
+
+CREATE SERVER bsdb_link
+ FOREIGN DATA WRAPPER postgres_fdw
+ OPTIONS (host 'localhost', dbname 'bsdb', port '5432');
+
+CREATE USER MAPPING FOR postgres
+SERVER bsdb_link
+OPTIONS (user 'postgres', password 'postgres');
+
+IMPORT FOREIGN SCHEMA public
+LIMIT TO (v_vcard)
+FROM SERVER bsdb_link INTO public;
+
+create or replace view v_vcard as
+select
+    id,
+    username,
+    chat_only_bio as bio,
+    chat_only_profession as profession,
+    chat_only_profile_name as name,
+    chat_only_profile_photo  as photo,
+    chat_only_profile_photo_name  as photo_name,
+    chat_only_region  as region,
+    chat_only_website as website
+from bs_user;
+
+
+
+
+
