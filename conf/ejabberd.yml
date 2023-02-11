@@ -173,7 +173,6 @@ modules:
     ## Mnesia is limited to 2GB, better to use an SQL backend
     ## For small servers SQLite is a good fit and is very easy
     ## to configure. Uncomment this when you have SQL configured:
-    db_type: sql
     assume_mam_usage: true
     default: always
   #mod_mqtt: {}
@@ -183,7 +182,6 @@ modules:
     access_persistent: all
     access_register: all
     access_mam: all
-    db_type: sql
     history_size: 200
     max_users: 200
     max_users_admin_threshold: 50
@@ -248,17 +246,14 @@ modules:
   mod_roster:
     versioning: false
     use_cache: true
-    db_type: sql
   ##  mod_s2s_dialback: {}
   mod_shared_roster: {}
   mod_stream_mgmt:
     resend_on_timeout: if_offline
   ##  mod_stun_disco: {}
   mod_vcard:
-    db_type: db
     search: false
     use_cache: false
-    s3_proxy_server: https://chat.be-society.com/files/
   mod_vcard_xupdate: {}
   mod_version:
     show_os: false
