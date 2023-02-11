@@ -262,7 +262,7 @@ modules:
     conversejs_script: "https://chat.be-society.com/dict/converse.min.js"
     conversejs_css: "https://chat.be-society.com/dict/converse.min.css"
   mod_http_fileserver:
-    docroot: "/opt/conversejs/dist"
+    docroot: "/opt/conversejs/dist/"
 
 ### Local Variables:
 ### mode: yaml
