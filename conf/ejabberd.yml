@@ -167,7 +167,7 @@ modules:
   # mod_fail2ban: {}
   mod_http_api: {}
   mod_http_upload:
-    put_url: https://@HOST@:8443/upload
+    put_url: https://@HOST@/upload
   mod_last: {}
   mod_mam:
     ## Mnesia is limited to 2GB, better to use an SQL backend
