@@ -18,4 +18,5 @@ docker run -it -d \
 -p 8280:8280 \
 -v $PWD/conf:/usr/lib/ejabberd/conf \
 -v $PWD/app/lib:/usr/lib/ejabberd/lib \
+-v $PWD/app/conversejs:/usr/lib/conversejs \
 besociety_ejabberd
