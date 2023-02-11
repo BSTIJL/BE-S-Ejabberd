@@ -132,6 +132,10 @@ shaper_rules:
     #    normal: all
     none: all
   s2s_shaper: fast
+  soft_upload_quota:
+    100: all
+  hard_upload_quota:
+    1000: all
 
 ## Authentication config
 auth_method: internal
@@ -168,6 +172,7 @@ modules:
   mod_http_api: {}
   mod_http_upload:
     put_url: https://@HOST@/upload
+  mod_http_upload_quota: {}
   mod_last: {}
   mod_mam:
     ## Mnesia is limited to 2GB, better to use an SQL backend
